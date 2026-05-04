@@ -1,5 +1,3 @@
-require('dotenv').config();
-const mongoose = require('mongoose');
 const Template = require('./models/Template.model');
 
 const templates = [
@@ -11,7 +9,7 @@ const templates = [
     tags: ['analytics', 'saas', 'dark mode', 'charts'],
     isPremium: true,
     price: 49,
-    previewUrl: 'https://demo.nexaflow.com',
+    previewUrl: 'https://demos.creative-tim.com/black-dashboard/examples/dashboard.html',
     rating: 4.9,
     downloads: 2340,
   },
@@ -23,7 +21,7 @@ const templates = [
     tags: ['marketing', 'conversion', 'hero', 'pricing'],
     isPremium: false,
     price: 0,
-    previewUrl: 'https://demo.launchpad.com',
+    previewUrl: 'https://html5up.net/aerial/demo',
     rating: 4.7,
     downloads: 5120,
   },
@@ -35,7 +33,7 @@ const templates = [
     tags: ['shop', 'cart', 'checkout', 'products'],
     isPremium: true,
     price: 79,
-    previewUrl: 'https://demo.shopforge.com',
+    previewUrl: 'https://demos.creative-tim.com/now-ui-kit/index.html',
     rating: 4.8,
     downloads: 1870,
   },
@@ -47,7 +45,7 @@ const templates = [
     tags: ['creative', 'designer', 'animation', 'showcase'],
     isPremium: false,
     price: 0,
-    previewUrl: 'https://demo.foliopro.com',
+    previewUrl: 'https://html5up.net/hyperspace/demo',
     rating: 4.6,
     downloads: 3890,
   },
@@ -59,7 +57,7 @@ const templates = [
     tags: ['admin', 'dashboard', 'rbac', 'enterprise'],
     isPremium: true,
     price: 99,
-    previewUrl: 'https://demo.adminpulse.com',
+    previewUrl: 'https://demos.creative-tim.com/paper-dashboard-2/examples/dashboard.html',
     rating: 4.9,
     downloads: 987,
   },
@@ -71,7 +69,7 @@ const templates = [
     tags: ['writing', 'content', 'seo', 'newsletter'],
     isPremium: false,
     price: 0,
-    previewUrl: 'https://demo.inkwell.com',
+    previewUrl: 'https://html5up.net/story/demo',
     rating: 4.5,
     downloads: 4210,
   },
@@ -83,7 +81,7 @@ const templates = [
     tags: ['starter', 'auth', 'billing', 'teams'],
     isPremium: true,
     price: 129,
-    previewUrl: 'https://demo.cloudbase.com',
+    previewUrl: 'https://demos.creative-tim.com/light-bootstrap-dashboard/examples/dashboard.html',
     rating: 4.8,
     downloads: 1560,
   },
@@ -95,7 +93,7 @@ const templates = [
     tags: ['photography', 'gallery', 'creative', 'lightbox'],
     isPremium: false,
     price: 0,
-    previewUrl: 'https://demo.pixel.com',
+    previewUrl: 'https://html5up.net/multiverse/demo',
     rating: 4.4,
     downloads: 2780,
   },
@@ -107,7 +105,7 @@ const templates = [
     tags: ['metrics', 'kpi', 'real-time', 'analytics'],
     isPremium: true,
     price: 59,
-    previewUrl: 'https://demo.metrichub.com',
+    previewUrl: 'https://demos.creative-tim.com/argon-dashboard/examples/dashboard.html',
     rating: 4.7,
     downloads: 3120,
   },
@@ -119,32 +117,25 @@ const templates = [
     tags: ['agency', 'marketing', 'parallax', 'animation'],
     isPremium: false,
     price: 0,
-    previewUrl: 'https://demo.bloom.com',
+    previewUrl: 'https://html5up.net/eventually/demo',
     rating: 4.6,
     downloads: 6340,
   },
 ];
 
-const seedDB = async () => {
+// Auto-seed: only runs if templates collection is empty
+const autoSeed = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('✅ Connected to MongoDB');
-
-    await Template.deleteMany({});
-    console.log('🗑️  Cleared existing templates');
-
-    const created = await Template.insertMany(templates);
-    console.log(`🌱 Seeded ${created.length} templates successfully!`);
-
-    console.log('\n📋 Template Categories seeded:');
-    const categories = [...new Set(templates.map((t) => t.category))];
-    categories.forEach((cat) => console.log(`   • ${cat}`));
-
-    process.exit(0);
+    const count = await Template.countDocuments();
+    if (count === 0) {
+      await Template.insertMany(templates);
+      console.log(`🌱 Auto-seeded ${templates.length} templates into DB`);
+    } else {
+      console.log(`📦 DB already has ${count} templates — skipping seed`);
+    }
   } catch (error) {
-    console.error('❌ Seed failed:', error.message);
-    process.exit(1);
+    console.error('❌ Auto-seed failed:', error.message);
   }
 };
 
-seedDB();
+module.exports = { autoSeed };

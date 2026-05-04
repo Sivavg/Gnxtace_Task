@@ -2,20 +2,19 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { templateAPI, favoriteAPI } from '../api/services';
 import { useAuth } from '../context/AuthContext';
 import TemplateCard from '../components/TemplateCard';
-import { Search, SlidersHorizontal, Grid3X3, LayoutList, Loader2, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, X, ChevronLeft, ChevronRight, LayoutTemplate } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const CATEGORIES = ['All', 'Landing Page', 'Dashboard', 'E-Commerce', 'Portfolio', 'Blog', 'SaaS', 'Admin Panel'];
 
 const SkeletonCard = () => (
-  <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
-    <div className="skeleton" style={{ height: '200px' }} />
-    <div className="p-5 space-y-3">
-      <div className="skeleton rounded-lg h-5 w-3/4" />
-      <div className="skeleton rounded-lg h-4 w-full" />
-      <div className="skeleton rounded-lg h-4 w-2/3" />
-      <div className="flex gap-2 pt-1">
-        {[1,2,3].map(i => <div key={i} className="skeleton rounded-lg h-5 w-16" />)}
+  <div className="border border-slate-200 rounded-lg bg-white overflow-hidden">
+    <div className="h-[200px] bg-slate-100 animate-pulse-custom"></div>
+    <div className="p-6">
+      <div className="h-4 bg-slate-100 rounded mb-4 animate-pulse-custom"></div>
+      <div className="h-4 bg-slate-100 rounded w-3/5 animate-pulse-custom"></div>
+      <div className="mt-8">
+        <div className="h-4 bg-slate-100 rounded animate-pulse-custom"></div>
       </div>
     </div>
   </div>
@@ -34,7 +33,6 @@ const Templates = () => {
   const [total, setTotal] = useState(0);
   const searchTimeout = useRef(null);
 
-  // Debounce search
   useEffect(() => {
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => {
@@ -44,12 +42,10 @@ const Templates = () => {
     return () => clearTimeout(searchTimeout.current);
   }, [search]);
 
-  // Reset page on category change
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory]);
 
-  // Fetch templates
   useEffect(() => {
     const fetchTemplates = async () => {
       setLoading(true);
@@ -71,7 +67,6 @@ const Templates = () => {
     fetchTemplates();
   }, [debouncedSearch, selectedCategory, currentPage]);
 
-  // Fetch favorite IDs for logged-in user
   useEffect(() => {
     if (!isAuthenticated) { setFavoriteIds(new Set()); return; }
     favoriteAPI.getIds()
@@ -90,105 +85,82 @@ const Templates = () => {
   const clearSearch = () => { setSearch(''); setDebouncedSearch(''); };
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
-      {/* Hero header */}
-      <div className="relative overflow-hidden py-16 px-4"
-        style={{ background: 'linear-gradient(180deg, rgba(139,92,246,0.05) 0%, transparent 100%)', borderBottom: '1px solid var(--border-color)' }}>
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-64 h-64 rounded-full blur-3xl opacity-10"
-            style={{ background: 'radial-gradient(circle, #8b5cf6, transparent)' }} />
-          <div className="absolute top-0 right-1/4 w-64 h-64 rounded-full blur-3xl opacity-10"
-            style={{ background: 'radial-gradient(circle, #ec4899, transparent)' }} />
-        </div>
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-sm text-purple-400 mb-4 border border-purple-500/20">
-            <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
-            {total} Templates Available
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-            Explore{' '}
-            <span className="gradient-text">Templates</span>
-          </h1>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Professionally crafted templates to kickstart your next project. Browse, filter, and save your favorites.
-          </p>
+    <div>
+      <div className="py-12 bg-white border-b border-slate-200">
+        <div className="max-w-[1200px] mx-auto px-8">
+          <h1 className="text-4xl font-bold mb-2">Explore Templates</h1>
+          <p className="text-lg text-slate-600">Browse our collection of {total > 0 ? total : ''} premium templates built for performance and scalability.</p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search & Filter Bar */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
+      {/* Sticky filter bar */}
+      <div className="bg-white border-b border-slate-200 py-6 sticky top-[65px] z-50">
+        <div className="max-w-[1200px] mx-auto px-8">
           {/* Search */}
-          <div className="relative flex-1">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-            <input
-              type="text"
-              placeholder="Search templates by name, description, or tag..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full pl-11 pr-10 py-3 rounded-xl text-white text-sm outline-none focus-ring transition-all duration-200"
-              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}
-            />
-            {search && (
-              <button onClick={clearSearch} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors">
-                <X size={16} />
-              </button>
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="relative flex-grow max-w-[420px]">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search templates by name..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full py-2.5 pr-10 pl-11 border border-slate-200 rounded-md text-sm bg-slate-50 text-slate-900 outline-none focus:border-blue-500 transition-colors"
+              />
+              {search && (
+                <button onClick={clearSearch} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 flex bg-none border-none cursor-pointer">
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+
+            {/* Results badge */}
+            {!loading && (
+              <span className="text-sm text-slate-600 whitespace-nowrap">
+                {total} template{total !== 1 ? 's' : ''} found
+              </span>
             )}
           </div>
-        </div>
 
-        {/* Category Pills */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {CATEGORIES.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                selectedCategory === cat
-                  ? 'text-white shadow-lg shadow-purple-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-              style={selectedCategory === cat
-                ? { background: 'linear-gradient(135deg, #8b5cf6, #ec4899)', border: '1px solid transparent' }
-                : { background: 'var(--bg-card)', border: '1px solid var(--border-color)' }
-              }
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Results info */}
-        {!loading && (
-          <div className="flex items-center justify-between mb-6">
-            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-              {debouncedSearch || selectedCategory !== 'All'
-                ? `${total} result${total !== 1 ? 's' : ''} found`
-                : `Showing all ${total} templates`}
-            </p>
+          {/* Category Pills */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            <span className="text-sm font-medium text-slate-600 self-center mr-1">Filter:</span>
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors duration-200 cursor-pointer ${
+                  selectedCategory === cat
+                    ? 'bg-slate-900 text-white border-slate-900'
+                    : 'bg-transparent text-slate-600 border-slate-200 hover:bg-slate-900 hover:text-white hover:border-slate-900'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* Grid */}
+      <div className="max-w-[1200px] mx-auto px-8 mt-10 mb-16">
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {Array.from({ length: 9 }).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : templates.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mb-4"
-              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>🔍</div>
-            <h3 className="text-xl font-semibold text-white mb-2">No templates found</h3>
-            <p className="text-slate-500 mb-6">Try adjusting your search or category filter</p>
+          <div className="text-center py-20 px-8 bg-white border border-dashed border-slate-200 rounded-lg">
+            <Search size={48} className="text-slate-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold mb-2">No templates found</h2>
+            <p className="text-slate-600 mb-8">We couldn't find anything matching your criteria.</p>
             <button
               onClick={() => { clearSearch(); setSelectedCategory('All'); }}
-              className="px-6 py-2.5 rounded-xl text-sm font-medium text-purple-400 border border-purple-500/30 hover:bg-purple-500/10 transition-all duration-200"
+              className="bg-blue-500 text-white px-6 py-2 rounded-md font-medium transition-colors hover:bg-blue-600"
             >
-              Clear filters
+              Clear all filters
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {templates.map((template) => (
               <TemplateCard
                 key={template._id}
@@ -200,45 +172,36 @@ const Templates = () => {
           </div>
         )}
 
-        {/* Pagination */}
         {!loading && totalPages > 1 && (
-          <div className="flex items-center justify-center gap-3 mt-12">
+          <div className="flex justify-center gap-2 mt-12">
             <button
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}
+              className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-md bg-white font-medium transition-colors hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronLeft size={16} />
-              Previous
+              <ChevronLeft size={20} />
             </button>
 
-            <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`w-9 h-9 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    currentPage === page ? 'text-white shadow-lg' : 'text-slate-500 hover:text-white hover:bg-white/5'
-                  }`}
-                  style={currentPage === page
-                    ? { background: 'linear-gradient(135deg, #8b5cf6, #ec4899)' }
-                    : { background: 'var(--bg-card)', border: '1px solid var(--border-color)' }
-                  }
-                >
-                  {page}
-                </button>
-              ))}
-            </div>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`w-10 h-10 flex items-center justify-center border rounded-md font-medium transition-colors ${
+                  currentPage === page
+                    ? 'bg-blue-500 text-white border-blue-500'
+                    : 'bg-white border-slate-200 hover:border-blue-500 hover:text-blue-500'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
 
             <button
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}
+              className="w-10 h-10 flex items-center justify-center border border-slate-200 rounded-md bg-white font-medium transition-colors hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Next
-              <ChevronRight size={16} />
+              <ChevronRight size={20} />
             </button>
           </div>
         )}

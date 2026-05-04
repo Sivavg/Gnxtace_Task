@@ -14,7 +14,7 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg-primary)' }}>
+        <div className="flex flex-col min-h-screen bg-slate-50">
           <Navbar />
           <main className="flex-1">
             <Routes>
@@ -40,20 +40,20 @@ const App = () => {
           toastOptions={{
             duration: 3000,
             style: {
-              background: '#1a1a2e',
-              color: '#f8fafc',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '12px',
+              background: '#ffffff',
+              color: '#0f172a',
+              border: '1px solid #e2e8f0',
+              borderRadius: '0.375rem',
               fontSize: '14px',
-              fontFamily: 'Inter, sans-serif',
+              fontFamily: 'inherit',
               padding: '12px 16px',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             },
             success: {
-              iconTheme: { primary: '#a78bfa', secondary: '#1a1a2e' },
+              iconTheme: { primary: '#10b981', secondary: '#ffffff' },
             },
             error: {
-              iconTheme: { primary: '#f87171', secondary: '#1a1a2e' },
+              iconTheme: { primary: '#ef4444', secondary: '#ffffff' },
             },
           }}
         />

@@ -85,12 +85,7 @@ JWT_EXPIRES_IN=7d
 NODE_ENV=development
 ```
 
-Seed the database with 10 templates:
-```bash
-npm run seed
-```
-
-Start the backend:
+Start the backend (it will automatically seed templates if the DB is empty):
 ```bash
 npm run dev
 ```
