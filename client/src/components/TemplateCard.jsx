@@ -22,19 +22,34 @@ const TemplateCard = ({ template, isFavorited = false, onFavoriteChange }) => {
       return;
     }
 
+    // Optimistic UI Update (Change UI instantly)
+    const previousFavState = isFav;
+    setIsFav(!isFav);
+    if (onFavoriteChange) onFavoriteChange(template._id, !isFav);
+
     setLoading(true);
     try {
       const res = await favoriteAPI.toggle(template._id);
       const newFav = res.data.isFavorited;
-      setIsFav(newFav);
-      toast.success(newFav ? 'Added to favorites' : 'Removed from favorites');
-      if (onFavoriteChange) onFavoriteChange(template._id, newFav);
+      
+      // Ensure sync with backend if somehow different
+      if (newFav !== !previousFavState) {
+        setIsFav(newFav);
+        if (onFavoriteChange) onFavoriteChange(template._id, newFav);
+      }
+      
+      toast.success(newFav ? 'Added to favorites' : 'Removed from favorites', { 
+        id: `fav-${template._id}` 
+      });
     } catch (err) {
-      toast.error('Something went wrong.');
+      // Revert UI on failure
+      setIsFav(previousFavState);
+      if (onFavoriteChange) onFavoriteChange(template._id, previousFavState);
+      toast.error('Failed to update favorite.');
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated, template._id, navigate, onFavoriteChange]);
+  }, [isAuthenticated, isFav, template._id, navigate, onFavoriteChange]);
 
   return (
     <div className="bg-white border border-slate-200 rounded-lg overflow-hidden shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg flex flex-col">
