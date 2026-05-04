@@ -6,9 +6,15 @@ A full-stack web application for browsing, discovering, and favoriting professio
 
 ## 👤 Author
 
-**[Your Name]**
 - Name: SivanathBabu V G
-- GitHub: [github.com/yourusername](https://github.com/Sivavg)
+- GitHub: [github.com/Sivavg](https://github.com/Sivavg)
+
+---
+
+## 🌐 Live Demo
+
+- **Frontend (Netlify):** [https://gnxtacetech.netlify.app/](https://gnxtacetech.netlify.app/)
+- **Backend (Render):** [https://backendgentxc.onrender.com](https://backendgentxc.onrender.com)
 
 ---
 

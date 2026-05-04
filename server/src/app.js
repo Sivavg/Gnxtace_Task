@@ -10,7 +10,7 @@ const { errorHandler } = require('./middleware/error.middleware');
 const app = express();
 
 // Middleware
-app.use(cors({ origin: '*', credentials: true }));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 app.use(morgan('dev'));
 
