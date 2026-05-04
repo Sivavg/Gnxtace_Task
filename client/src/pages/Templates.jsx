@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { templateAPI, favoriteAPI } from '../api/services';
 import { useAuth } from '../context/AuthContext';
 import TemplateCard from '../components/TemplateCard';
-import { Search, X, ChevronLeft, ChevronRight, LayoutTemplate } from 'lucide-react';
+import { Search, X, ChevronLeft, ChevronRight, LayoutTemplate, Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const CATEGORIES = ['All', 'Landing Page', 'Dashboard', 'E-Commerce', 'Portfolio', 'Blog', 'SaaS', 'Admin Panel'];
@@ -83,6 +84,28 @@ const Templates = () => {
   }, []);
 
   const clearSearch = () => { setSearch(''); setDebouncedSearch(''); };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex justify-center items-center min-h-[calc(100vh-70px)] bg-slate-50 px-4">
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
+          <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Lock size={32} className="text-blue-500" />
+          </div>
+          <h2 className="text-3xl font-bold mb-3">Login Required</h2>
+          <p className="text-slate-600 mb-8 text-lg">Please sign in to view and explore our premium template collection.</p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/login" className="bg-blue-500 text-white px-8 py-3 rounded-md font-medium transition-colors hover:bg-blue-600">
+              Sign In
+            </Link>
+            <Link to="/register" className="bg-transparent text-slate-900 border border-slate-200 px-8 py-3 rounded-md font-medium transition-colors hover:bg-slate-50 hover:border-slate-600">
+              Create Account
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
