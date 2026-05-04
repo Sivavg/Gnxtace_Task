@@ -7,8 +7,8 @@ A full-stack web application for browsing, discovering, and favoriting professio
 ## 👤 Author
 
 **[Your Name]**
-- Email: your.email@example.com
-- GitHub: github.com/yourusername
+- Name: SivanathBabu V G
+- GitHub: [github.com/yourusername](https://github.com/Sivavg)
 
 ---
 
